@@ -1,0 +1,112 @@
+Overview of LINUX
+
+General introduction to Linux and how it is used. The focus is on how Linux appears to a programmer working in a shell window on X. 
+
+Linux Goals 
+	UNIX
+	- Ineractive system designed to handle multiple processes and multiple users at the same time
+	- Designed by programmers, for programmers
+	
+What is that good programmers want in a system?
+	- Principle of least suprise, e.i, a component in a system should act as a user expects it to act.
+	- "Power and Flexibility". A system should have a small number of basic elements that can be combined in an infinite variety of ways to suit the desired application.
+		- One of the basic guidelines behind Linux is that every program should do just one thing and do it well. 
+	- Remove redundancy. Why type copy when cp is enough? Why run a program, get it to tell you what to do, when you can call it directly with arguments?
+ 
+Interfaces to Linux 
+	
+	- A linux system can be regarded as a kind of pyramid
+
+USER      |	 				 ----- .....................................................................
+INTERFACE V					|Users|
+			    	      --------------------------------
+LIBRARY   |		             |Standard utility programs       |
+INTERFACE V			     |(shell, editors, compilers etc.)|		       
+		                 -----------------------------------------
+SYSTEM CALL |			|	    Standard library	          |			        
+INTERFACE   V			|   (open, close, read, write, fork, etc.)|		   USER MODE
+	             -------------------------------------------------------------------- ...................................
+		    |  			Linux operating system			         |  
+	            |(process management, memory management, the file system, I/O, etc.) |	KERNEL MODE 
+		 -----------------------------------------------------------------------------  .............................
+		|		Hardware (CPU, memory, disks, terminals, etc.)  	       |
+		 ------------------------------------------------------------------------------
+
+	- Programs make system calls by putting the arguments in registers (or sometimes, on the stack), and issuing trap instructions to switch from user mode to kernel mode. 
+
+	- There is no way to write a trap instruction in C. Hence a library is provided, with one procedure per system call. These procedures are written in assembly language, but can be called from C. Each one first puts its arguments in the proper place, then executes the trap instruction. 
+		- E.g., to execute the read system call, a C program can call the read library procedure.
+			-  It is the library interface, and not the system call interface (these are OS dependent), that is specified by POSIX. Portable Operating System Interface (POSIX) is a set of standards that defines an OS-independent programing interface. 
+			- POSIX tells which library procedures a conformant system must supply, what their parameters are, what they must do, and what results they must return (It does not even mention the ACTUAL system calls). 
+
+	- In addition to the operating system and system call library, all versions of Linux supply a large number of standard programs.
+		- E.g, command processor (shell), compilers, editors, text processing programs, and file manipulation utilites.
+
+	- Three different interfaces to Linux: 
+		1. The true system call interface
+		2. the library interface
+		3. The interface formed by the set of standard utility programs. 
+
+Graphical User Interface (EXTRA, DO NOT READ IF NOT INTERESTED) 
+	- GUIs on Linux are supported by the X Windowing System, or commonly X11 or just X, which defines communication and display protocols for manipulating windows on bitmap displays for UNIX and UNIX-like systems. 
+
+	- The X server is the main component which controls devices such as keyboards, mouse, screen and is responsible for redirecting input to ar accepting output from client programs.
+ 
+	- The GUI environment is typically built on top of a low level library, xlib, which containts the functionality to interact with the X server.
+
+The shell 
+	Bourne Agains Shell (BASH), Bourne Shell (Original UNIX shell).
+
+	
+Linux Utility Programs 
+	od, head, grep, sort, wc, tail, cat, chmod, cp, cut, make, mkdir, od, paste, pr, ps, ps, rm, rmdir, tr (check usage in manual using man)
+	
+	make
+		- Used to maintain large programs whose source code consists of multiple files.
+		- Some of these often are header files (.h), which contains type, variable, macto, and other declerations.
+		- Source files often include these using a special include directive (#include <> or "").
+			
+Kernel Structure 
+
+	Kernel sits directly on the hardware and enales interactions with I/O devices and the memory management unit and controls CPU access to them. 
+
+	Contains
+		- I/O Component, contains all kernel pieces responsible for interacting with devices and performing network and storage I/O operations. 
+			
+			(Virtual file system)
+				- At the highest level, the I/O operations are all integrated under a Viritual File System layer.
+				- At the top level, performing a read operation to a file, wther it is in memory or on disk, is the same as performing a read operation to retrive a character from a terminal input.
+
+				- At the lowest level all I/O operations pass through some device driver. All Linux drivers are clessified as either character device drivers or block device driver, with the main difference that seeks and random accesses are allow on block device drivers and not on character devices. 
+
+			- Terminals 
+			- Line discipline 
+			- Chraracter device drivers
+
+			- Sockets 
+			- Network protocols 
+			- Network device drivers 
+
+			- File systems 
+			- Generic block layer 
+			- I/O scheduler
+			- Block device drivers 
+ 	
+		- Memory management component
+			
+			- Virtual memory
+
+			- Paging page replacement 
+
+			- Page cache 
+ 
+		- Process managment component 
+			
+			- Signal handling
+
+			- Process/thread creation & termination 
+
+			- CPU scheduling
+
+
+	At the lowest levels it contains interrput handlers, which are the primary way for interacting with devices, and the low-level dispatching mechanism. This dispatching occurs when an interrupt happens. The low-level code here stops the running process, saves its state in the kernel process structures, and starts the approriate driver. Process dispatching also happens when the kernel completes some operations and it is time to start up a user process agains. The dispatching code is in assembler and is quite distinct from scheduling.
