@@ -1,6 +1,6 @@
 # MEMORY MANAGEMENT
 
-Techbology does not provite a private, infinitely large, infinitely fast memory that is also nonvolatile ( does not loose its contents when the power is switched off )
+Technology does not provite a private, infinitely large, infinitely fast memory that is also nonvolatile ( does not loose its contents when the power is switched off )
 
 Alternative:
 - Memory hierarchy of different kind of memory that posseses various grades of these attributes.
